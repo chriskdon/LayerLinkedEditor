@@ -42,8 +42,7 @@ require(['DrawingEditor/DrawingEditor', 'DrawingEditor/kLayer'], function(Drawin
 			type: "button",
 			value: "Delete Layer -> " + editor.getLayerCount()
 		}).click(function() {
-			//editor.removeLayer(newLayer);
-			alert(newLayer.getImage64Data());
+			editor.removeLayer(newLayer);
 			updateCount();
 			$(this).remove();
 		}));
