@@ -1,4 +1,4 @@
-define(['jQuery'], function($) {
+define(['jQuery','App.DrawingEditor.Tools.Pencil'], function($, Pencil) {
 	function DrawingEditor(editorID, options) {
 		// Root element that canvases will be attached to
 		this.root = {
@@ -10,6 +10,12 @@ define(['jQuery'], function($) {
 		this.stage = {
 			element: this.root.jElement,
 			layers: []
+		};
+
+		// Object to hold properties for the current state of tools
+		this.toolManager = {
+			tool: null,
+			toolOnLayer: null
 		};
 
 		// Optional Settings
@@ -92,7 +98,10 @@ define(['jQuery'], function($) {
 	 * @return {string} base64 image of the stage.
 	 */
 	DrawingEditor.prototype.getImage64Data = function() {
-		var exportCanvas = $("<canvas/>").get(0);
+		var exportCanvas = $("<canvas/>")
+							.attr("width", this.options.width)
+							.attr("height", this.options.height).get(0);
+
 		var exportContext = exportCanvas.getContext('2d');
 
 		for(var i = 0; i < this.getLayerCount(); i++) {
@@ -100,6 +109,48 @@ define(['jQuery'], function($) {
 		}
 
 		return exportCanvas.toDataURL();
+	};
+
+	/**
+	 * Move the pencil from one layer to another.
+	 * @param  {/DrawingEditor/kLayer} layer Layer to move the pencil to.
+	 * @param  {object}	Pencil options
+	 * @return {/DrawingEditor/kLayer} Layer the pencil was moved to.
+	 */
+	DrawingEditor.prototype.putPencilOnLayer = function(layer, options) {
+		// The tool to use
+		var pencil = new Pencil(layer.getCanvasContext(),options);
+
+		this.toolManager = {
+			tool: pencil,
+			toolOnLayer: layer
+		};
+
+		/**
+		 * Normalize the even so that all x, and y's work on every browser
+		 * @param  {function} type The event handler for this event.
+		 */
+		function normalizeEvent (type) {
+			return function(event) {
+				if (event.layerX || event.layerX === 0) { /* Firefox */
+					event._x = event.layerX;
+					event._y = event.layerY;
+				} else if (event.offsetX || event.offsetX === 0) { /* Opera */
+					event._x = event.offsetX;
+					event._y = event.offsetY;
+				}
+
+				type(event);
+			};
+		}
+
+		// Add events to the layers canvas
+		var canvas = layer.getCanvas().get(0);
+		canvas.addEventListener('mousedown', normalizeEvent(pencil.getMouseDownEventHandler()), false);
+		canvas.addEventListener('mousemove', normalizeEvent(pencil.getMouseMoveEventHandler()), false);
+		canvas.addEventListener('mouseup', normalizeEvent(pencil.getMouseUpEventHandler()), false);
+
+		return layer;
 	};
 
 	return DrawingEditor;
