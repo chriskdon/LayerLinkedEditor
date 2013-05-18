@@ -12,7 +12,9 @@ require.config({
 		'jQuery': {
 			exports: '$'
 		}
-	}
+	},
+
+	urlArgs: "bust=" + (new Date()).getTime()
 });
 
 // Run App
@@ -22,11 +24,12 @@ require(['DrawingEditor/DrawingEditor', 'DrawingEditor/kLayer'], function(Drawin
 		height: 300
 	});
 
-	function updateCount() {
-		$("#lbl_LayerCount").html(editor.getLayerCount());
-	}
-
+	// Add Layer
 	$("#btn_AddLayer").click(function() {
+		function updateCount() {
+			$("#lbl_LayerCount").html(editor.getLayerCount());
+		}
+
 		var newLayer = new kLayer({
 			backgroundColor: $("#txt_color").val(),
 			opacity: $("#txt_opacity").val()
@@ -34,16 +37,23 @@ require(['DrawingEditor/DrawingEditor', 'DrawingEditor/kLayer'], function(Drawin
 
 		editor.addLayer(newLayer); // Add the new layer
 
+		// Delete Layer
 		$("#layerDeletes").append($("<input/>", {
 			type: "button",
 			value: "Delete Layer -> " + editor.getLayerCount()
 		}).click(function() {
-			editor.removeLayer(newLayer);
+			//editor.removeLayer(newLayer);
+			alert(newLayer.getImage64Data());
 			updateCount();
 			$(this).remove();
 		}));
 
 		updateCount();
+	});
+
+	// Export All
+	$("#btn_ExporAll").click(function() {
+		$("#exportOut").text(editor.getImage64Data());
 	});
 
 	console.log("Drawing Surface Created => " + editor.toString());

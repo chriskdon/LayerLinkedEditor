@@ -47,7 +47,8 @@ define(['jQuery'], function($) {
 			position: "absolute",
 			left: 0,
 			top: 0
-		});
+		}).attr("width", this.options.width)
+		.attr("height", this.options.height);
 
 		this.stage.element.append(canvas);
 
@@ -85,6 +86,20 @@ define(['jQuery'], function($) {
 	 */
 	DrawingEditor.prototype.getLayerCount = function() {
 		return this.stage.layers.length;
+	};
+
+	/**
+	 * @return {string} base64 image of the stage.
+	 */
+	DrawingEditor.prototype.getImage64Data = function() {
+		var exportCanvas = $("<canvas/>").get(0);
+		var exportContext = exportCanvas.getContext('2d');
+
+		for(var i = 0; i < this.getLayerCount(); i++) {
+			exportContext.drawImage(this.stage.layers[i].getCanvas().get(0), 0, 0);
+		}
+
+		return exportCanvas.toDataURL();
 	};
 
 	return DrawingEditor;

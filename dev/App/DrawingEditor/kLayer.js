@@ -19,10 +19,17 @@ define(['jQuery'], function($){
 	}
 
 	/**
-	 * @return {Canvas} Return the canvas for this layer.
+	 * @return {jQuery Canvas} Return the canvas for this layer.
 	 */
 	kLayer.prototype.getCanvas = function() {
 		return this.canvas;
+	};
+
+	/**
+	 * @return {Canvas Context} Get the context of the canvas for this layer.
+	 */
+	kLayer.prototype.getCanvasContext = function() {
+		return this.getCanvas().get(0).getContext('2d');
 	};
 
 	/**
@@ -30,6 +37,13 @@ define(['jQuery'], function($){
 	 */
 	kLayer.prototype.getName = function() {
 		return this.options.name;
+	};
+
+	/**
+	 * @return {string} The base64 representation of the canvas image.
+	 */
+	kLayer.prototype.getImage64Data = function() {
+		return this.getCanvas().get(0).toDataURL();
 	};
 
 	return kLayer;
