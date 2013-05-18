@@ -22,14 +22,29 @@ require(['DrawingEditor/DrawingEditor', 'DrawingEditor/kLayer'], function(Drawin
 		height: 300
 	});
 
-	editor.addLayer(new kLayer({
-		backgroundColor: "#F00"
-	}));
+	function updateCount() {
+		$("#lbl_LayerCount").html(editor.getLayerCount());
+	}
 
-	editor.addLayer(new kLayer({
-		backgroundColor: "#0F0",
-		opacity: 0
-	}));
+	$("#btn_AddLayer").click(function() {
+		var newLayer = new kLayer({
+			backgroundColor: $("#txt_color").val(),
+			opacity: $("#txt_opacity").val()
+		});
+
+		editor.addLayer(newLayer); // Add the new layer
+
+		$("#layerDeletes").append($("<input/>", {
+			type: "button",
+			value: "Delete Layer -> " + editor.getLayerCount()
+		}).click(function() {
+			editor.removeLayer(newLayer);
+			updateCount();
+			$(this).remove();
+		}));
+
+		updateCount();
+	});
 
 	console.log("Drawing Surface Created => " + editor.toString());
 });

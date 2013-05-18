@@ -6,7 +6,11 @@ define(['jQuery'], function($) {
 			jElement: $("#" + editorID)
 		};
 
-		this.stage = this.root.jElement;
+		// Alias for the stage element
+		this.stage = {
+			element: this.root.jElement,
+			layers: []
+		};
 
 		// Optional Settings
 		this.options = $.extend({
@@ -18,7 +22,7 @@ define(['jQuery'], function($) {
 		}, options);
 
 		// Init
-		this.root.jElement.css({
+		this.stage.element.css({
 			'display': 'inline-block',
 			'width': this.options.width,
 			'height': this.options.height,
@@ -45,7 +49,24 @@ define(['jQuery'], function($) {
 			top: 0
 		});
 
-		this.stage.append(canvas);
+		this.stage.element.append(canvas);
+
+		this.stage.layers.push(layer);
+
+		return layer;
+	};
+
+	/**
+	 * Remove a layer from the stage.
+	 * @param  {DrawingEditor/kLayer} layer The layer to be deleted.
+	 * @return {DrawingEditor/Klayer}       The layer that was removed.
+	 */
+	DrawingEditor.prototype.removeLayer = function(layer) {
+		layer.getCanvas().remove(); // Remove canvas from DOM
+
+		// Delete from layers
+		var layers = this.stage.layers;
+		layers.splice(layers.indexOf(layer), 1);
 
 		return layer;
 	};
@@ -57,6 +78,13 @@ define(['jQuery'], function($) {
 	DrawingEditor.prototype.toString = function() {
 		return "Drawing Editor @ElementID: #" + this.root.id + ", @Size: " +
 			this.options.width + "x" + this.options.height;
+	};
+
+	/**
+	 * @return {int} Return the number of layers created.
+	 */
+	DrawingEditor.prototype.getLayerCount = function() {
+		return this.stage.layers.length;
 	};
 
 	return DrawingEditor;
