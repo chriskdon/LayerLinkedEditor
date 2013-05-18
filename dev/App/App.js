@@ -5,7 +5,12 @@
  */
 require.config({
 	paths: {
-		'jQuery': 'vendors/jQuery.min'
+		'jQuery': 'vendors/jQuery.min',
+
+		// Aplication Namespaces
+		'App.DrawingEditor.DrawingEditor': 'DrawingEditor/DrawingEditor',
+		'App.DrawingEditor.Layer': 'DrawingEditor/Layer',
+		'App.DrawingEditor.Tools.Pencil': 'DrawingEditor/Tools/Pencil'
 	},
 
 	shim: {
@@ -18,7 +23,7 @@ require.config({
 });
 
 // Run App
-require(['DrawingEditor/DrawingEditor', 'DrawingEditor/kLayer'], function(DrawingEditor, kLayer) {
+require(['App.DrawingEditor.DrawingEditor', 'App.DrawingEditor.Layer'], function(DrawingEditor, Layer) {
 	var editor = new DrawingEditor("drawingArea", {
 		width: 300,
 		height: 300
@@ -30,20 +35,20 @@ require(['DrawingEditor/DrawingEditor', 'DrawingEditor/kLayer'], function(Drawin
 			$("#lbl_LayerCount").html(editor.getLayerCount());
 		}
 
-		var newLayer = new kLayer({
+		var newLayer = new Layer({
 			backgroundColor: $("#txt_color").val(),
 			opacity: $("#txt_opacity").val()
 		});
 
-		editor.addLayer(newLayer); // Add the new layer
+		editor.addLayer(newLayer); 			// Add the new layer
+		editor.putPencilOnLayer(newLayer);	// Draw on layer
 
 		// Delete Layer
 		$("#layerDeletes").append($("<input/>", {
 			type: "button",
 			value: "Delete Layer -> " + editor.getLayerCount()
 		}).click(function() {
-			//editor.removeLayer(newLayer);
-			alert(newLayer.getImage64Data());
+			editor.removeLayer(newLayer);
 			updateCount();
 			$(this).remove();
 		}));

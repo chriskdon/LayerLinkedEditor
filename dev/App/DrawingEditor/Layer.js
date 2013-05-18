@@ -1,10 +1,10 @@
 /**
- * DrawingEditor/kLayer
+ * DrawingEditor/Layer
  * 
  * Layer that can hold elements.
  */
 define(['jQuery'], function($){
-	function kLayer(options) {
+	function Layer(options) {
 		this.options = $.extend({
 			name: null,
 			backgroundColor: "transparent",
@@ -21,30 +21,30 @@ define(['jQuery'], function($){
 	/**
 	 * @return {jQuery Canvas} Return the canvas for this layer.
 	 */
-	kLayer.prototype.getCanvas = function() {
+	Layer.prototype.getCanvas = function() {
 		return this.canvas;
 	};
 
 	/**
 	 * @return {Canvas Context} Get the context of the canvas for this layer.
 	 */
-	kLayer.prototype.getCanvasContext = function() {
+	Layer.prototype.getCanvasContext = function() {
 		return this.getCanvas().get(0).getContext('2d');
 	};
 
 	/**
 	 * @return {string} Get the name of this layer.
 	 */
-	kLayer.prototype.getName = function() {
+	Layer.prototype.getName = function() {
 		return this.options.name;
 	};
 
 	/**
 	 * @return {string} The base64 representation of the canvas image.
 	 */
-	kLayer.prototype.getImage64Data = function() {
+	Layer.prototype.getImage64Data = function() {
 		return this.getCanvas().get(0).toDataURL();
 	};
 
-	return kLayer;
+	return Layer;
 });
