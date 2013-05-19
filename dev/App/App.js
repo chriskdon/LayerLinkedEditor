@@ -3,11 +3,16 @@ define(function(require) {
 	var $             = require('vendors.jQuery');
 	var DrawingEditor = require('App.DrawingEditor.DrawingEditor');
 	var Layer         = require('App.DrawingEditor.Layer');
+	var Manager       = require('App.LayerDataManager.Manager');
 
 	var editor = new DrawingEditor("drawingArea", {
 		width: 300,
 		height: 300
 	});
+
+	editor.putPencilOnLayer(editor.addLayer(new Layer())); // Starting Layer
+
+	var manager = new Manager();
 
 	// Add Layer
 	$("#btn_AddLayer").click(function() {
@@ -20,7 +25,7 @@ define(function(require) {
 			opacity: $("#txt_opacity").val()
 		});
 
-		editor.addLayer(newLayer); 			// Add the new layer
+		editor.addLayer(newLayer);			// Add the new layer
 		editor.putPencilOnLayer(newLayer);	// Draw on layer
 
 		// Delete Layer

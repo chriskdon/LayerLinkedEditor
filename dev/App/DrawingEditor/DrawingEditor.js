@@ -18,8 +18,7 @@ define(function(require) {
 
 		// Object to hold properties for the current state of tools
 		this.toolManager = {
-			tool: null,
-			toolOnLayer: null
+			layer: null /* Current layer the tool is applied to */
 		};
 
 		// Optional Settings
@@ -122,12 +121,11 @@ define(function(require) {
 	 * @return {/DrawingEditor/kLayer} Layer the pencil was moved to.
 	 */
 	DrawingEditor.prototype.putPencilOnLayer = function(layer, options) {
-		// The tool to use
-		var pencil = new Pencil(layer.getCanvasContext(),options);
+		// Remove old tool
+		this.removeTool();
 
 		this.toolManager = {
-			tool: pencil,
-			toolOnLayer: layer
+			layer: layer
 		};
 
 		/**
@@ -148,13 +146,32 @@ define(function(require) {
 			};
 		}
 
-		// Add events to the layers canvas
-		var canvas = layer.getCanvas().get(0);
-		canvas.addEventListener('mousedown', normalizeEvent(pencil.getMouseDownEventHandler()), false);
-		canvas.addEventListener('mousemove', normalizeEvent(pencil.getMouseMoveEventHandler()), false);
-		canvas.addEventListener('mouseup', normalizeEvent(pencil.getMouseUpEventHandler()), false);
+		/* Add events to the layer */
+		var pencil = new Pencil(layer.getCanvasContext(), options);
+
+		layer.addEventHandler('mousedown', normalizeEvent(pencil.getMouseDownEventHandler()));
+		layer.addEventHandler('mousemove', normalizeEvent(pencil.getMouseMoveEventHandler()));
+		layer.addEventHandler('mouseup', normalizeEvent(pencil.getMouseUpEventHandler()));
 
 		return layer;
+	};
+
+	/**
+	 * Remove the tool from the layer the tool manager is pointing to.
+	 * @return {App.DrawingEditor.Layer}       The layer the tool was removed from.
+	 */
+	DrawingEditor.prototype.removeTool = function() {
+		if(this.toolManager.layer !== null) {
+			var layer = this.toolManager.layer;
+
+			layer.removeEventHandler('mousedown');
+			layer.removeEventHandler('mousemove');
+			layer.removeEventHandler('mouseup');
+
+			return layer;
+		}
+
+		return null;
 	};
 
 	return DrawingEditor;

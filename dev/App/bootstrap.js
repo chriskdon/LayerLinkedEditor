@@ -10,7 +10,9 @@ require.config({
 		// Aplication Namespaces
 		'App.DrawingEditor.DrawingEditor': 'DrawingEditor/DrawingEditor',
 		'App.DrawingEditor.Layer': 'DrawingEditor/Layer',
-		'App.DrawingEditor.Tools.Pencil': 'DrawingEditor/Tools/Pencil'
+		'App.DrawingEditor.Tools.Pencil': 'DrawingEditor/Tools/Pencil',
+
+		'App.LayerDataManager.Manager': 'LayerDataManager/Manager'
 	},
 
 	shim: {

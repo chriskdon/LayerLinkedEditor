@@ -19,7 +19,40 @@ define(function(require){
 			"background-color": this.options.backgroundColor,
 			"opacity": this.options.opacity
 		});
+
+		// Events connected to this layer
+		this.eventHandlers = {};
 	}
+
+	/**
+	 * Add an event handler to the canvas
+	 * @param  {string} eventName Name of th event.
+	 * @param  {function} handler   Function to call when it occurs.
+	 */
+	Layer.prototype.addEventHandler = function(eventName, handler) {
+		var canvas = this.getCanvas().get(0);
+		canvas.addEventListener(eventName, handler, false);
+
+		this.eventHandlers[eventName] = handler;
+	};
+
+	/**
+	 * Remove an event from the canvas.
+	 * @param  {string} eventName The name of the event to be removed.
+	 */
+	Layer.prototype.removeEventHandler = function(eventName) {
+		var canvas = this.getCanvas().get(0);
+		canvas.removeEventListener(eventName, this.eventHandlers[eventName], false);
+
+		delete this.eventHandlers[eventName];
+	};
+
+	/**
+	 * @return {Object} The events connected to this layer.
+	 */
+	Layer.prototype.getEventHandlers = function() {
+		return this.eventHandlers;
+	};
 
 	/**
 	 * @return {jQuery Canvas} Return the canvas for this layer.
