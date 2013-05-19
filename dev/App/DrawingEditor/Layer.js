@@ -3,7 +3,10 @@
  * 
  * Layer that can hold elements.
  */
-define(['jQuery'], function($){
+define(function(require){
+	/* Includes */
+	var $ = require('vendors.jQuery');
+
 	function Layer(options) {
 		this.options = $.extend({
 			name: null,

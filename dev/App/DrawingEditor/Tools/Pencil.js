@@ -1,4 +1,6 @@
-define(['jQuery'], function($) {
+define(function(require) {
+	var $ = require('vendors.jQuery');
+
 	function Pencil(context, options) {
 		this.options = $.extend({
 			color: '#000'

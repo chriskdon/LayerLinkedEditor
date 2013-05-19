@@ -1,4 +1,8 @@
-define(['jQuery','App.DrawingEditor.Tools.Pencil'], function($, Pencil) {
+define(function(require) {
+	/* Includes */
+	var $ = require('vendors.jQuery');
+	var Pencil = require('App.DrawingEditor.Tools.Pencil');
+
 	function DrawingEditor(editorID, options) {
 		// Root element that canvases will be attached to
 		this.root = {

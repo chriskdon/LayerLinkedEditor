@@ -1,29 +1,9 @@
-/**
- * Setup Require
- *
- * Create shims for external libraries
- */
-require.config({
-	paths: {
-		'jQuery': 'vendors/jQuery.min',
+define(function(require) {
+	/* Includes */
+	var $             = require('vendors.jQuery');
+	var DrawingEditor = require('App.DrawingEditor.DrawingEditor');
+	var Layer         = require('App.DrawingEditor.Layer');
 
-		// Aplication Namespaces
-		'App.DrawingEditor.DrawingEditor': 'DrawingEditor/DrawingEditor',
-		'App.DrawingEditor.Layer': 'DrawingEditor/Layer',
-		'App.DrawingEditor.Tools.Pencil': 'DrawingEditor/Tools/Pencil'
-	},
-
-	shim: {
-		'jQuery': {
-			exports: '$'
-		}
-	},
-
-	urlArgs: "bust=" + (new Date()).getTime()
-});
-
-// Run App
-require(['App.DrawingEditor.DrawingEditor', 'App.DrawingEditor.Layer'], function(DrawingEditor, Layer) {
 	var editor = new DrawingEditor("drawingArea", {
 		width: 300,
 		height: 300
