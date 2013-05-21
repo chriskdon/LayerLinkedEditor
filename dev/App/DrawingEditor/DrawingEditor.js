@@ -10,12 +10,6 @@ define(function(require) {
 			jElement: $("#" + editorID)
 		};
 
-		// Alias for the stage element
-		this.stage = {
-			element: this.root.jElement,
-			layers: []
-		};
-
 		// Object to hold properties for the current state of tools
 		this.toolManager = {
 			layer: null /* Current layer the tool is applied to */
@@ -30,7 +24,13 @@ define(function(require) {
 			borderColor: '#000'
 		}, options);
 
-		// Init
+	
+		/* Alias for the stage element */
+		this.stage = {
+			element: this.root.jElement,
+			layers: []
+		};
+
 		this.stage.element.css({
 			'display': 'inline-block',
 			'width': this.options.width,
@@ -121,58 +121,37 @@ define(function(require) {
 	 * @return {/DrawingEditor/kLayer} Layer the pencil was moved to.
 	 */
 	DrawingEditor.prototype.putPencilOnLayer = function(layer, options) {
-		// Remove old tool
-		this.removeTool();
+		/* Remove tool from the layer it was previously on */
+		if(this.toolManager.layer !== null) {
+			var oldLayer = this.toolManager.layer;
 
+			oldLayer.removeEventHandler('mousedown');
+			oldLayer.removeEventHandler('mousemove');
+			oldLayer.removeEventHandler('mouseup');
+		}
+
+		/* Set the tool manager to the new layer */
 		this.toolManager = {
 			layer: layer
 		};
 
-		/**
-		 * Normalize the even so that all x, and y's work on every browser
-		 * @param  {function} type The event handler for this event.
-		 */
-		function normalizeEvent (type) {
-			return function(event) {
-				if (event.layerX || event.layerX === 0) { /* Firefox */
-					event._x = event.layerX;
-					event._y = event.layerY;
-				} else if (event.offsetX || event.offsetX === 0) { /* Opera */
-					event._x = event.offsetX;
-					event._y = event.offsetY;
-				}
-
-				type(event);
-			};
-		}
-
 		/* Add events to the layer */
 		var pencil = new Pencil(layer.getCanvasContext(), options);
 
-		layer.addEventHandler('mousedown', normalizeEvent(pencil.getMouseDownEventHandler()));
-		layer.addEventHandler('mousemove', normalizeEvent(pencil.getMouseMoveEventHandler()));
-		layer.addEventHandler('mouseup', normalizeEvent(pencil.getMouseUpEventHandler()));
+		layer.addEventHandler('mousedown', pencil.getMouseDownEventHandler());
+		layer.addEventHandler('mousemove', pencil.getMouseMoveEventHandler());
+		layer.addEventHandler('mouseup', pencil.getMouseUpEventHandler());
 
 		return layer;
 	};
 
 	/**
-	 * Remove the tool from the layer the tool manager is pointing to.
-	 * @return {App.DrawingEditor.Layer}       The layer the tool was removed from.
+	 * Return the layer the current working tool is on.
+	 * @return {App.DrawingEditor.Layer}
 	 */
-	DrawingEditor.prototype.removeTool = function() {
-		if(this.toolManager.layer !== null) {
-			var layer = this.toolManager.layer;
-
-			layer.removeEventHandler('mousedown');
-			layer.removeEventHandler('mousemove');
-			layer.removeEventHandler('mouseup');
-
-			return layer;
-		}
-
-		return null;
-	};
+	DrawingEditor.prototype.getCurrentToolLayer = function() {
+		return this.toolManager.layer;
+	}
 
 	return DrawingEditor;
 });

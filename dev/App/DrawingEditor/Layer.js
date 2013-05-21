@@ -3,7 +3,7 @@
  * 
  * Layer that can hold elements.
  */
-define(function(require){
+define(function(require) {
 	/* Includes */
 	var $ = require('vendors.jQuery');
 
@@ -45,13 +45,6 @@ define(function(require){
 		canvas.removeEventListener(eventName, this.eventHandlers[eventName], false);
 
 		delete this.eventHandlers[eventName];
-	};
-
-	/**
-	 * @return {Object} The events connected to this layer.
-	 */
-	Layer.prototype.getEventHandlers = function() {
-		return this.eventHandlers;
 	};
 
 	/**

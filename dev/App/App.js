@@ -10,21 +10,22 @@ define(function(require) {
 		height: 300
 	});
 
-	editor.putPencilOnLayer(editor.addLayer(new Layer())); // Starting Layer
+	editor.putPencilOnLayer(editor.addLayer(new Layer())); /* Starting Layer */
 
-	var manager = new Manager();
+	var dataManager = new Manager();
 
-	// Add Layer
-	$("#btn_AddLayer").click(function() {
-		function updateCount() {
-			$("#lbl_LayerCount").html(editor.getLayerCount());
-		}
+	/* Add Layer */
+	$("#btn_AddItem").click(function() {
+		/* Link the layer and data */
+		var saveLayer = editor.getCurrentToolLayer();
 
-		var newLayer = new Layer({
-			backgroundColor: $("#txt_color").val(),
-			opacity: $("#txt_opacity").val()
+		manager.linkLayerToData(saveLayer, {
+			a:1,
+			b:2
 		});
 
+		/* Create a new working layer */
+		var newLayer = new Layer();
 		editor.addLayer(newLayer);			// Add the new layer
 		editor.putPencilOnLayer(newLayer);	// Draw on layer
 

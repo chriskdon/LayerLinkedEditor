@@ -2,7 +2,12 @@ define(function(require) {
 	/* Includes */
 	var $ = require('vendors.jQuery');
 
-	function Manager() {
+	function Manager(options) {
+		/* Optional Parameters */
+		this.options = $.extend({
+			onLinkData: function(layer, data) {}
+		}, options);
+
 		this.data = []; /* Holds all the related data and layers in objects */
 	}
 
@@ -20,8 +25,11 @@ define(function(require) {
 
 		this.data.push(linked);
 
+		if(this.options.onLinkData) this.options.onLinkData(layer, data);
+
 		return linked;
-	};
+	}; 
+	
 
 	return Manager;
 });
